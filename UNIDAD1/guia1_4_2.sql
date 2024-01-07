@@ -43,3 +43,37 @@ DECLARE
     V_ID_EMP NUMBER;
     V_NOMBRE_COMUNA VARCHAR2(50);
     V_CONTADOR NUMBER:= 100;
+BEGIN
+
+    
+    WHILE V_CONTADOR <= 320 LOOP
+        SELECT
+            NUMRUN_EMP,
+            DVRUN_EMP,
+            PNOMBRE_EMP||' '||SNOMBRE_EMP||' '||APPATERNO_EMP||' '||APMATERNO_EMP,
+            SUELDO_BASE,
+            EMP.ID_COMUNA,
+            ID_EMP,
+            NOMBRE_COMUNA
+        INTO
+            V_RUN,
+            V_DV_RUN,
+            V_NOMBRE,
+            V_SUELDO_BASE,
+            V_ID_COMUNA,
+            V_ID_EMP,
+            V_NOMBRE_COMUNA
+        FROM 
+            EMPLEADO EMP
+        JOIN 
+            COMUNA CO
+        ON
+            CO.ID_COMUNA = EMP.ID_COMUNA
+        WHERE 
+            ID_EMP = V_CONTADOR; --BIND
+        --PORCENTAJE
+        V_PORC_MOVIL:= TRUNC(V_SUELDO_BASE /100000);
+        --VALOR MOVILIZACION NORMAL
+        V_VALOR_MOVIL:= V_SUELDO_BASE * V_PORC_MOVIL/100;
+        
+        --CALCULO DE MOVILIZACION EXTRA
