@@ -316,3 +316,27 @@ V_DESCUENTOS_LEGALES NUMBER;
 V_SUELDO_BRUTO NUMBER;
 v_RENTA_IMPONIBLE NUMBER;
 V_CONTADOR NUMBER := 100;
+BEGIN
+    
+    WHILE V_CONTADOR <= 320 LOOP
+    
+        --CALCULO ANNIO TRIBUTARIO
+        V_ANNIO_TRIBUTARIO := EXTRACT(YEAR FROM SYSDATE);
+        
+        --INFORMACION BASICA EMPLEADO
+        SELECT 
+            ID_EMP,
+            TO_CHAR(NUMRUN_EMP, '99G999G999')||'-'||DVRUN_EMP,
+            PNOMBRE_EMP||' '||SNOMBRE_EMP||' '||APPATERNO_EMP||' '||APMATERNO_EMP,
+            SUELDO_BASE,
+            ID_COMUNA
+        INTO
+            V_ID_EMP,
+            V_RUT_EMP,
+            V_NOMBRE_EMP,
+            V_SUELDO_BASE_MENSUAL,
+            V_ID_COMUNA
+        FROM
+            EMPLEADO
+        WHERE
+            ID_EMP = V_CONTADOR;--CONTADOR
