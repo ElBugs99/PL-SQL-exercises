@@ -340,3 +340,57 @@ BEGIN
             EMPLEADO
         WHERE
             ID_EMP = V_CONTADOR;--CONTADOR
+    
+    
+        --VERIFICAR CARGO DE EMPLEADO CON TABLA DE CAMION
+        SELECT COUNT(ID_EMP) INTO V_ARRIENDOS_EMP FROM CAMION WHERE ID_EMP = 120;--CONTADOR
+        
+        IF V_ARRIENDOS_EMP > 0 THEN 
+            V_CARGO_EMP := 'Encargado de Arriendos';
+        ELSE
+            V_CARGO_EMP := 'Labores Administrativas';
+        END IF;
+            
+        --CANTIDAD DE MESES QUE EMP TRABAJO EN EL ANNIO
+        SELECT 
+            trunc(MONTHS_BETWEEN(sysdate, FECHA_CONTRATO)),
+            trunc(MONTHS_BETWEEN(sysdate, FECHA_CONTRATO) /12)
+        INTO
+            V_MESES_TRABAJADOS,
+            V_ANNIOS_TRABAJADOS
+        FROM 
+            EMPLEADO
+        WHERE ID_EMP = V_CONTADOR; --CONTADOR
+            
+        IF V_MESES_TRABAJADOS >= 12 THEN
+            V_MESES_TRABAJADOS:= 12;
+        END IF;
+        
+        --CALCULO SUELDO ANUAL
+        V_SUELDO_BASE_ANUAL:= V_SUELDO_BASE_MENSUAL * 12;
+        
+    
+        --PORCENTAJE BONO ANNIOS ANTIGUEDAD
+        SELECT
+            NVL(TA.PORCENTAJE, 0)
+        INTO
+            V_PORC_ANNIOS_ANTIGUEDAD
+        FROM
+            EMPLEADO EMP
+        LEFT JOIN 
+            TRAMO_ANTIGUEDAD TA
+        ON 
+            trunc(MONTHS_BETWEEN(sysdate, EMP.FECHA_CONTRATO) /12) BETWEEN TA.TRAMO_INF AND TA.TRAMO_SUP
+            AND EXTRACT(YEAR FROM SYSDATE)-1 = ANNO_VIG
+        WHERE
+        ID_EMP = V_CONTADOR;--CONTADOR
+        
+        --BONO POR ANNIOS TRABAJADOS
+        V_BONO_ANNIOS_ANTIGUEDAD:= ROUND(V_SUELDO_BASE_ANUAL * V_PORC_ANNIOS_ANTIGUEDAD / 100, 0);
+        
+        --BONO CAMIONES O BIENESTAR
+        IF V_ARRIENDOS_EMP > 0 THEN 
+            V_BONO_ESPECIAL_ANUAL := ((V_ARRIENDOS_EMP * :B_PORC_BONO_ARRIENDO) * V_SUELDO_BASE_ANUAL) /100;
+        ELSE
+            V_BONO_ESPECIAL_ANUAL := V_SUELDO_BASE_ANUAL * :B_PORC_BONO_BIENESTAR /100;
+        END IF;
