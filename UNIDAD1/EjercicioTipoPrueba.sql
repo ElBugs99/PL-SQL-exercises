@@ -47,3 +47,33 @@ BEGIN
         V_MIN,
         V_MAX
     FROM EMPLEADO;
+        
+    WHILE V_MIN <= V_MAX LOOP
+    
+        --INFO BASICA EMPLEADO
+        SELECT
+            COD_EMP,
+            NUMRUT_EMP,
+            SUELDO_BASE_EMP,
+            TRUNC(MONTHS_BETWEEN(SYSDATE, FECING_EMP)/12), --ANNIOS
+            NVL(PORC.PORC_BONIF,0),
+            NVL(M.PORC_MOV,0)
+        INTO
+            V_COD_EMP,
+            V_NUMRUT_EMP,
+            V_VAL_SUELDO_BASE,
+            V_ANNIOS_EMPLEADO,
+            V_PORC_BONI_ANNIOS,
+            V_PORC_MOV
+        FROM
+            EMPLEADO EMP
+        LEFT JOIN
+            PORC_BONIF_ANNOS_CONTRATO PORC
+        ON 
+            TRUNC(MONTHS_BETWEEN(SYSDATE, FECING_EMP)/12) 
+            BETWEEN PORC.ANNOS_CONT_INF AND PORC.ANNOS_CONT_SUP
+        LEFT JOIN
+            PORC_MOVILIZACION M
+        ON
+            SUELDO_BASE_EMP BETWEEN SUELDO_BASE_INF AND SUELDO_BASE_SUP
+        WHERE COD_EMP = V_MIN;--CONTADOR
