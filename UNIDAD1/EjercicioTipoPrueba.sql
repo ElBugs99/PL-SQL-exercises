@@ -142,4 +142,20 @@ BEGIN
         --DESCUENTO PREVISION EMPLEADO
         V_DESCUENTO_PREVISION_EMPLEADO := ROUND((V_VAL_SUELDO_BASE + V_VALOR_COMISION_VENTA 
         + V_ASIG_CARGA_FAM + V_VAL_ASIG_ESC) * V_PORC_DESCTO_AFP /100);
+        
+        --OBTENCION DE PORCENTAJE DE DESCUENTO SALUD
+        SELECT
+            PORC_DESCTO_SALUD
+        INTO
+            V_PORC_DESCTO_SALUD
+        FROM
+            EMPLEADO EMP
+        JOIN
+            SALUD S
+        ON
+            EMP.COD_SALUD = S.COD_SALUD
+        WHERE COD_EMP = V_MIN;--CONTADOR
+        
+        V_VAL_SALUD:= ROUND(((V_VAL_SUELDO_BASE + V_ASIG_ANNOS + V_VAL_MOV) * V_PORC_DESCTO_SALUD)/100);
+        --v_valor_salud := ROUND((v_sueldo_base_emp + v_valor_asig_annos + v_valor_mov) * v_por_descto_salud);
             
