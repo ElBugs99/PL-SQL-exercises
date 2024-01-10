@@ -77,3 +77,37 @@ BEGIN
         ON
             SUELDO_BASE_EMP BETWEEN SUELDO_BASE_INF AND SUELDO_BASE_SUP
         WHERE COD_EMP = V_MIN;--CONTADOR
+        
+        --VALOR ASIG_ANNOS
+        V_ASIG_ANNOS:= ROUND(V_PORC_BONI_ANNIOS * V_VAL_SUELDO_BASE /100);
+        
+        --NUMERO ASIGNACION CARGA FAMILIAR
+        SELECT
+            COUNT(COD_EMP)
+        INTO
+            V_NUM_CARGAS_FAM
+        FROM
+            CARGA_FAMILIAR
+        WHERE COD_EMP = V_MIN;--CONTADOR
+        
+        --VAL ASIGANCION CARGA FAMILIAR
+        V_ASIG_CARGA_FAM:= V_NUM_CARGAS_FAM * :B_VAL_CARGA_FAMI;
+        
+        V_VAL_MOV := ROUND(V_PORC_MOV * V_VAL_SUELDO_BASE/100);
+        
+        --VALOR POR COMISION
+        SELECT
+            NVL(SUM(VALOR_COMISION), 0)
+        INTO
+            V_VALOR_COMISION_VENTA
+        FROM
+            BOLETA B 
+        JOIN
+            COMISION_VENTA C
+        ON
+            B.NRO_BOLETA = C.NRO_BOLETA
+        WHERE 
+            EXTRACT(YEAR FROM FECHA_BOLETA) = V_ANNIO_PROCESO
+            AND EXTRACT(MONTH FROM FECHA_BOLETA) = V_MES_PROCESO
+            AND B.COD_EMP = V_MIN; --CONTADOR  FECHA
+            
