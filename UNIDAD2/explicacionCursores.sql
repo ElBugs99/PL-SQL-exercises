@@ -30,3 +30,27 @@ subconsultas
 4 cerrar el cursor (begin-end)
 -bd libera el area de memoria reservada para las filas que retorno el selec
 del cursor
+
+
+
+--MODIFICACION PRUEBA 1 PARA TRABAJAR CON CURSOR EXPLICITO SIMPLE
+--EXPLICITO SIMPLE. PARA LEER TODAS LAS FILAS DEL CURSOR USANDO WHILE LOOP
+VARIABLE b_fecha_proceso VARCHAR2(10);
+VAR b_valor_cf NUMBER;
+VAR b_haber_tope_cf NUMBER;
+VAR b_porc_com_ventas NUMBER;
+VAR b_monto_mov NUMBER;
+EXEC :b_fecha_proceso:='31/12/2023';
+EXEC :b_valor_cf:=6300;
+EXEC :b_haber_tope_cf:=405000;
+EXEC :b_porc_com_ventas:=.40;
+DECLARE
+--PASO 1 SE DECLARA EL CURSOR EXPLICITO
+CURSOR C_DATOS_VENDEDOR IS
+    --DATOS BASICOS DE TODOS LOS VENDEDORES
+    SELECT v.id_vendedor, v.rut_vendedor, v.sueldo_base, v.id_categoria, 
+        TRUNC(MONTHS_BETWEEN(:b_fecha_proceso,v.fec_contrato)/12)
+          FROM vendedor v 
+          ORDER BY v.rut_vendedor;
+      
+
