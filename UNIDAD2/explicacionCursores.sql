@@ -322,3 +322,48 @@ BEGIN
           -- calcula el valor de la asignación
           v_asig_cargas := ROUND(:b_valor_cf * v_tot_cargas);
      END IF;    
+
+     -- Cálculo total de los haberes
+     v_total_haberes := v_sueldo_base + v_asig_antig + v_asig_cargas + v_com_ventas + v_bono_categ;
+                      
+    -- INSERCIÓN DE LOS RESULTADOS EN LAS TABLAS    
+    INSERT INTO haber_mes_vendedor
+    VALUES(v_id_vendedor, v_rut_vend, SUBSTR(:b_fecha_proceso,4,2), 
+           SUBSTR(:b_fecha_proceso,7),v_sueldo_base,
+           v_asig_antig,v_asig_cargas, v_com_ventas, 
+           v_bono_categ,v_total_haberes);
+
+    IF SUBSTR(:b_fecha_proceso,4,2)=12 THEN
+        SELECT id_categoria
+             INTO v_nueva_categ
+            FROM categoria
+           WHERE v_monto_anual_ventas BETWEEN monto_anual_vent_inf AND monto_anual_venta_sup;
+      
+
+          UPDATE vendedor
+                  SET id_categoria=v_nueva_categ
+           WHERE id_vendedor=v_id_vendedor;
+     
+          IF v_nueva_categ = v_id_categ THEN
+                v_obs:='El vendedor mantiene categoria';
+          ELSE
+                  v_obs:='El vendedor cambia categoria';
+          END IF;
+          INSERT INTO detalle_modif_categ_vendedor
+          VALUES(v_id_vendedor, v_rut_vend, SUBSTR(:b_fecha_proceso,4,2), 
+            SUBSTR(:b_fecha_proceso,7),v_id_categ, v_nueva_categ,v_obs);
+    END IF;
+    
+    FETCH C_DATOS_VENDEDOR
+   INTO v_id_vendedor,
+        v_rut_vend ,
+        v_sueldo_base,
+        v_id_categ,
+        v_annos;
+   END LOOP;
+   
+   --PASO 4: CERRAR EL CURSOR
+   CLOSE C_DATOS_VENDEDOR;
+END;
+
+
