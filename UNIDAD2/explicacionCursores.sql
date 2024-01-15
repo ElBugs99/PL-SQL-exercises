@@ -155,3 +155,81 @@ BEGIN
           -- calcula el valor de la asignación
           v_asig_cargas := ROUND(:b_valor_cf * v_tot_cargas);
      END IF;    
+
+     -- Cálculo total de los haberes
+     v_total_haberes := v_sueldo_base + v_asig_antig + v_asig_cargas + v_com_ventas + v_bono_categ;
+                      
+    -- INSERCIÓN DE LOS RESULTADOS EN LAS TABLAS    
+    INSERT INTO haber_mes_vendedor
+    VALUES(v_id_vendedor, v_rut_vend, SUBSTR(:b_fecha_proceso,4,2), 
+           SUBSTR(:b_fecha_proceso,7),v_sueldo_base,
+           v_asig_antig,v_asig_cargas, v_com_ventas, 
+           v_bono_categ,v_total_haberes);
+
+    IF SUBSTR(:b_fecha_proceso,4,2)=12 THEN
+        SELECT id_categoria
+             INTO v_nueva_categ
+            FROM categoria
+           WHERE v_monto_anual_ventas BETWEEN monto_anual_vent_inf AND monto_anual_venta_sup;
+      
+
+          UPDATE vendedor
+                  SET id_categoria=v_nueva_categ
+           WHERE id_vendedor=v_id_vendedor;
+     
+          IF v_nueva_categ = v_id_categ THEN
+                v_obs:='El vendedor mantiene categoria';
+          ELSE
+                  v_obs:='El vendedor cambia categoria';
+          END IF;
+          INSERT INTO detalle_modif_categ_vendedor
+          VALUES(v_id_vendedor, v_rut_vend, SUBSTR(:b_fecha_proceso,4,2), 
+            SUBSTR(:b_fecha_proceso,7),v_id_categ, v_nueva_categ,v_obs);
+    END IF;
+    v_id_vendedor := v_id_vendedor + 10;      
+   END LOOP;
+   
+   --PASO 4: CERRAR EL CURSOR
+   CLOSE C_DATOS_VENDEDOR;
+END;
+
+
+
+
+
+
+
+--MODIFICACION PRUEBA 1 PARA TRABAJAR CON CURSOR EXPLICITO SIMPLE
+--EXPLICITO SIMPLE. PARA LEER TODAS LAS FILAS DEL CURSOR USANDO WHILE LOOP
+VARIABLE b_fecha_proceso VARCHAR2(10);
+VAR b_valor_cf NUMBER;
+VAR b_haber_tope_cf NUMBER;
+VAR b_porc_com_ventas NUMBER;
+VAR b_monto_mov NUMBER;
+EXEC :b_fecha_proceso:='31/12/2023';
+EXEC :b_valor_cf:=6300;
+EXEC :b_haber_tope_cf:=405000;
+EXEC :b_porc_com_ventas:=.40;
+DECLARE
+--PASO 1 SE DECLARA EL CURSOR EXPLICITO
+CURSOR C_DATOS_VENDEDOR IS
+    --DATOS BASICOS DE TODOS LOS VENDEDORES
+    SELECT v.id_vendedor, v.rut_vendedor, v.sueldo_base, v.id_categoria, 
+        TRUNC(MONTHS_BETWEEN(:b_fecha_proceso,v.fec_contrato)/12)
+          FROM vendedor v 
+          ORDER BY v.rut_vendedor;
+      
+
+v_id_vendedor number;
+v_rut_vend NUMBER(10);
+v_sueldo_base NUMBER(8);
+v_id_categ VARCHAR2(2);
+v_annos NUMBER;
+v_nueva_categ VARCHAR2(2);
+v_porc_antig NUMBER(2);
+v_porc_categ NUMBER(4,3);
+
+v_tot_cargas NUMBER;
+v_asig_antig NUMBER(8):=0;
+v_bono_categ NUMBER(8):=0;
+v_asig_cargas NUMBER(8):=0;
