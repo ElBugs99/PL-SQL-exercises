@@ -54,3 +54,28 @@ CURSOR C_DATOS_VENDEDOR IS
           ORDER BY v.rut_vendedor;
       
 
+v_id_vendedor number;
+v_rut_vend NUMBER(10);
+v_sueldo_base NUMBER(8);
+v_id_categ VARCHAR2(2);
+v_annos NUMBER;
+v_nueva_categ VARCHAR2(2);
+v_porc_antig NUMBER(2);
+v_porc_categ NUMBER(4,3);
+
+v_tot_cargas NUMBER;
+v_asig_antig NUMBER(8):=0;
+v_bono_categ NUMBER(8):=0;
+v_asig_cargas NUMBER(8):=0;
+v_com_ventas  NUMBER(8);
+v_total_hab_cf NUMBER(10);
+v_total_haberes NUMBER(10) := 0;
+v_monto_anual_ventas NUMBER(10) := 0;
+v_monto_mes_ventas NUMBER(10) := 0;
+v_obs VARCHAR2(30);
+BEGIN
+   -- Se TRUNCAN la tabla para facilitar la ejecución del bloque
+   EXECUTE IMMEDIATE('TRUNCATE TABLE HABER_MES_VENDEDOR');
+   EXECUTE IMMEDIATE('TRUNCATE TABLE DETALLE_MODIF_CATEG_VENDEDOR');
+
+   -- Se obtienen las id mínima y máxima para recorrer la tabla vendedor
