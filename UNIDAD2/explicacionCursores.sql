@@ -79,3 +79,38 @@ BEGIN
    EXECUTE IMMEDIATE('TRUNCATE TABLE DETALLE_MODIF_CATEG_VENDEDOR');
 
    -- Se obtienen las id mínima y máxima para recorrer la tabla vendedor
+
+   
+   
+   --paso 2: abrir el cursor
+    OPEN C_DATOS_VENDEDOR;
+
+    --PASO 3: LEER CADA FILA DEL CURSOR
+    --OPCION 1: LOOP SIMPLE
+
+   LOOP
+   --SE LEE CADA FILA DEL CURSOR
+   FETCH C_DATOS_VENDEDOR
+   INTO v_id_vendedor,
+        v_rut_vend ,
+        v_sueldo_base,
+        v_id_categ,
+        v_annos;
+        
+    --se debe indicar la condicion de salida del loop
+    exit when C_DATOS_VENDEDOR%NOTFOUND;
+    
+     -- Se inicializan las variables
+     v_asig_antig:=0;
+     v_bono_categ:=0;
+     v_asig_cargas:=0;
+     -- Obtiene los datos básicos para el proceso
+      
+      -- Calcula bonificación por antiguedad
+      IF v_annos > 0 THEN
+           SELECT porc_bonif
+             INTO v_porc_antig
+             FROM bonificacion_antig
+            WHERE v_annos BETWEEN anno_tramo_inf AND anno_tramo_sup;
+            v_asig_antig:=ROUND(v_sueldo_base*(v_porc_antig/100));
+      END IF;
