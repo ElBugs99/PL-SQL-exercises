@@ -81,3 +81,26 @@ BEGIN
   VALUES(SEQ_ERROR_PROC.NEXTVAL,p_rutina_error,p_mensaje_error);
 END P_GRABAR_ERROR;
 END PKG_PROCESO_REMUN;
+
+CREATE OR REPLACE PROCEDURE SP_PROCESA_EMP IS
+CURSOR cur_datos_emp IS
+    SELECT employee_id, 
+           first_name || ' ' || last_name nombre_emp,
+           salary,
+           department_id
+    FROM employees
+    ORDER BY employee_id;
+v_nombre_depto VARCHAR2(250);
+BEGIN
+   FOR re_datos_emp IN cur_datos_emp LOOP
+       v_nombre_depto:=PKG_PROCESO_REMUN.F_OBT_NOMBRE_DEPTO
+       (re_datos_emp.department_id, 
+        re_datos_emp.employee_id);
+      DBMS_OUTPUT.PUT_LINE('El empleado ' || re_datos_emp.nombre_emp ||
+      ' trabaja en el depto ' || v_nombre_depto);
+  END LOOP;
+END;
+
+
+
+SET SERVEROUTPUT ON;
