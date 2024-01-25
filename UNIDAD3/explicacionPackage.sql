@@ -67,3 +67,10 @@ BEGIN
      FROM departments
      WHERE department_id=p_id_depto;
      RETURN v_nombre_depto;
+EXCEPTION
+WHEN OTHERS THEN
+  v_mensaje_error:=SQLCODE;
+  P_GRABAR_ERROR('F_OBT_NOMBRE_DEPTO ' || '
+  al obtener el depto del empleado ' || p_id_emp, v_mensaje_error);
+  RETURN 'No se obtuvo nombre depto';
+END F_OBT_NOMBRE_DEPTO; 
