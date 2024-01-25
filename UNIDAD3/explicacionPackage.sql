@@ -74,3 +74,10 @@ WHEN OTHERS THEN
   al obtener el depto del empleado ' || p_id_emp, v_mensaje_error);
   RETURN 'No se obtuvo nombre depto';
 END F_OBT_NOMBRE_DEPTO; 
+         
+PROCEDURE P_GRABAR_ERROR(p_rutina_error VARCHAR2, p_mensaje_error VARCHAR2) IS
+BEGIN
+  INSERT INTO ERROR_PROCESO
+  VALUES(SEQ_ERROR_PROC.NEXTVAL,p_rutina_error,p_mensaje_error);
+END P_GRABAR_ERROR;
+END PKG_PROCESO_REMUN;
