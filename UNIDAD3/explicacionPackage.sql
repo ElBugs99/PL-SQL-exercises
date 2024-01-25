@@ -55,3 +55,15 @@ FUNCTION F_OBT_NOMBRE_DEPTO(p_id_depto NUMBER, p_id_emp NUMBER)
          RETURN VARCHAR2;
 PROCEDURE P_GRABAR_ERROR(p_rutina_error VARCHAR2, p_mensaje_error VARCHAR2);
 END PKG_PROCESO_REMUN;
+
+-- EJEMPLO DE CREACION DE CUERPO DE PACKAGE
+CREATE OR REPLACE PACKAGE BODY PKG_PROCESO_REMUN IS
+FUNCTION F_OBT_NOMBRE_DEPTO(p_id_depto NUMBER, p_id_emp NUMBER) 
+     RETURN VARCHAR2 IS
+v_nombre_depto VARCHAR2(30);
+BEGIN
+   SELECT department_name
+     INTO v_nombre_depto
+     FROM departments
+     WHERE department_id=p_id_depto;
+     RETURN v_nombre_depto;
