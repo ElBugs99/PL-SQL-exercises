@@ -54,3 +54,7 @@ update => :new => tendra nuevo valor de las columnas que se actualizan + el valo
                     que no se actualizan
                     
             :old => conserva valores de antes
+            
+7 si se desea que el trigger realice acciones diferentes cuando se actualice, elimine o inserte una fila, entonces se deben usar
+los predicadores: inserting, deleting y updating
+
