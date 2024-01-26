@@ -58,3 +58,6 @@ update => :new => tendra nuevo valor de las columnas que se actualizan + el valo
 7 si se desea que el trigger realice acciones diferentes cuando se actualice, elimine o inserte una fila, entonces se deben usar
 los predicadores: inserting, deleting y updating
 
+/*SE CREA TRIGGER ASOCIADO A LA TABLA EMPLEADOS PARA QUE SE EJECUTE O SE ACTIVE CADA VEZ QUE SE RALICE
+IN INSERT, UPDATE O DELETE SOBRE LA TABLA. EL TRIGGER VA A INSERTAR EN LA TABLA AUDIT_EMPLEADOS
+LOS VALORES NUEVOS Y ANTIGUOS DE CADA FILA */
