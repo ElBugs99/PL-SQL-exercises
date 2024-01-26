@@ -37,3 +37,20 @@ trigger hace que las sentencias dml sobre la tabla sean un poco mas lentas.
         sentencias plsql y/o sql;
     end trg_nombre;
     
+6 los trigger a nivel de fila requieren trabajar con 2 estructuras de datos: old y new.
+para referenciar las columnas de ambas estructuras en el trigger se debe hacer referencia a 
+:old.columna
+o
+:new.columna
+
+                                :old.columna = null
+insert => solo tiene sentido usar :new.columna
+
+                                :new.columna = null
+delete => solo tiene sentido usar :old.columna
+
+
+update => :new => tendra nuevo valor de las columnas que se actualizan + el valor de las otras columna
+                    que no se actualizan
+                    
+            :old => conserva valores de antes
