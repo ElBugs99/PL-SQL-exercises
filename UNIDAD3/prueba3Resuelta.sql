@@ -24,3 +24,10 @@ INSERT INTO calificacion_mensual_empleado
 VALUES(:NEW.mes, :NEW.anno, :NEW.run_empleado,v_total_haberes,v_calif);
 END;
 /
+CREATE OR REPLACE PACKAGE PKG_CALCULO_HABERES AS
+v_monto_ventas NUMBER(8) := 0;
+FUNCTION F_OBT_MONTO_VENTAS (p_run VARCHAR2, p_fec VARCHAR2) RETURN NUMBER;
+PROCEDURE P_GRABAR_ERROR(p_rutina_error VARCHAR2, p_mensaje_error VARCHAR2);
+END PKG_CALCULO_HABERES;
+5
+/
