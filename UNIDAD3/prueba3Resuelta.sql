@@ -51,3 +51,22 @@ VALUES(seq_error.NEXTVAL, p_rutina_error, p_mensaje_error);
 END P_GRABAR_ERROR;
 END PKG_CALCULO_HABERES;
 /
+CREATE OR REPLACE FUNCTION FN_OBT_PORC_ANTIGUEDAD(
+p_anti NUMBER, p_ventas NUMBER) RETURN NUMBER AS
+v_pct NUMBER(5,3);
+v_msg VARCHAR2(300);
+BEGIN
+SELECT porc_antiguedad/100
+INTO v_pct
+FROM porcentaje_antiguedad
+WHERE p_anti BETWEEN annos_antiguedad_inf AND annos_antiguedad_sup;
+RETURN v_pct;
+EXCEPTION
+WHEN OTHERS THEN
+v_msg := sqlerrm;
+PKG_CALCULO_HABERES.P_GRABAR_ERROR('Error en la función FN_OBT_PORC_ANTIGUEDAD al obtener el
+porcentaje asociado a '
+|| p_anti || ' años de antiguedad ', v_msg);
+RETURN 0;
+END FN_OBT_PORC_ANTIGUEDAD;
+/
