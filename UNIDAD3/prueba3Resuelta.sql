@@ -13,3 +13,6 @@ v_total_haberes:=:NEW.sueldo_base +
 :NEW.comision_ventas;
 IF v_total_haberes BETWEEN 400000 AND 700000 THEN
 v_calif:='Total de Haberes: ' || v_total_haberes ||
+'. Califica como Empleado con Salario Bajo el Promedio';
+ELSIF v_total_haberes BETWEEN 700001 AND 900000 THEN
+v_calif:='Total de Haberes: ' || v_total_haberes ||
