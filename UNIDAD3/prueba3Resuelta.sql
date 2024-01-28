@@ -70,3 +70,48 @@ porcentaje asociado a '
 RETURN 0;
 END FN_OBT_PORC_ANTIGUEDAD;
 /
+CREATE OR REPLACE FUNCTION FN_OBT_PORC_ESCOLARIDAD(p_cod_esc NUMBER) RETURN NUMBER
+AS
+v_porc_asig_esc NUMBER(5,3);
+v_msg VARCHAR2(300);
+BEGIN
+SELECT porc_escolaridad/100
+INTO v_porc_asig_esc
+FROM porcentaje_escolaridad
+WHERE cod_escolaridad = p_cod_esc;
+RETURN v_porc_asig_esc;
+EXCEPTION
+WHEN OTHERS THEN
+v_msg := sqlerrm;
+PKG_CALCULO_HABERES.P_GRABAR_ERROR('Error en la función FN_OBT_PORC_ESCOLARIDAD al obtener el
+porcentaje asociado al código escolaridad '
+|| p_cod_esc , v_msg);
+RETURN 0;
+6
+END FN_OBT_PORC_ESCOLARIDAD;
+/
+CREATE OR REPLACE PROCEDURE SP_CALCULA_HABERES(
+p_fec VARCHAR2, p_colacion NUMBER, p_mov NUMBER) AS
+CURSOR cur_emp IS
+SELECT e.run_empleado,
+e.nombre || ' ' || e.paterno || ' ' || e.materno nombre_emp,
+e.sueldo_base, e.cod_escolaridad,
+ROUND(MONTHS_BETWEEN(p_fec,e.fecha_contrato)/12) annos_cont
+FROM empleado e
+ORDER BY paterno, materno, nombre;
+-- variables escalares
+v_mov NUMBER(8) := 0;
+v_asiespecial number(8) := 0;
+v_asig_esc number(8) := 0;
+v_pctcomis number;
+v_comisventas number(8) := 0;
+BEGIN
+EXECUTE IMMEDIATE 'TRUNCATE TABLE DETALLE_HABERES_MENSUAL';
+EXECUTE IMMEDIATE 'TRUNCATE TABLE ERROR_CALC';
+EXECUTE IMMEDIATE 'TRUNCATE TABLE CALIFICACION_MENSUAL_EMPLEADO';
+EXECUTE IMMEDIATE 'ALTER SEQUENCE SEQ_ERROR RESTART START WITH 1';
+FOR reg_emp in cur_emp LOOP
+v_mov := p_mov;
+-- Cálculo monto ventas que realizó el empleado en el mes y año que se está procesando
+PKG_CALCULO_HABERES.v_monto_ventas:=PKG_CALCULO_HABERES.F_OBT_MONTO_VENTAS(reg_emp.run_empl
+eado, SUBSTR(p_fec,4));
