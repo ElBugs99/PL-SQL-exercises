@@ -43,3 +43,11 @@ FROM boleta
 WHERE to_char(fecha, 'mm/yyyy') = p_fec
 AND run_empleado = p_run;
 RETURN v_monto_ventas;
+END F_OBT_MONTO_VENTAS;
+PROCEDURE P_GRABAR_ERROR(p_rutina_error VARCHAR2, p_mensaje_error VARCHAR2) IS
+BEGIN
+INSERT INTO ERROR_CALC
+VALUES(seq_error.NEXTVAL, p_rutina_error, p_mensaje_error);
+END P_GRABAR_ERROR;
+END PKG_CALCULO_HABERES;
+/
