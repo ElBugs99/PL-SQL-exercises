@@ -16,3 +16,11 @@ v_calif:='Total de Haberes: ' || v_total_haberes ||
 '. Califica como Empleado con Salario Bajo el Promedio';
 ELSIF v_total_haberes BETWEEN 700001 AND 900000 THEN
 v_calif:='Total de Haberes: ' || v_total_haberes ||
+'. Califica como Empleado con Salario Promedio';
+ELSE v_calif:='Total de Haberes: ' || v_total_haberes ||
+'. Califica como Empleado con Salario Sobre el Promedio';
+END IF;
+INSERT INTO calificacion_mensual_empleado
+VALUES(:NEW.mes, :NEW.anno, :NEW.run_empleado,v_total_haberes,v_calif);
+END;
+/
