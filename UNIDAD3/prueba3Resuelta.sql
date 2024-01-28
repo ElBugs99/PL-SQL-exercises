@@ -115,3 +115,25 @@ v_mov := p_mov;
 -- Cálculo monto ventas que realizó el empleado en el mes y año que se está procesando
 PKG_CALCULO_HABERES.v_monto_ventas:=PKG_CALCULO_HABERES.F_OBT_MONTO_VENTAS(reg_emp.run_empl
 eado, SUBSTR(p_fec,4));
+-- Cálculo asignacion especial por antiguedad
+v_asiespecial := ROUND(FN_OBT_PORC_ANTIGUEDAD(reg_emp.annos_cont,
+PKG_CALCULO_HABERES.v_monto_ventas)*PKG_CALCULO_HABERES.v_monto_ventas);
+-- Cálculo asignación por escolaridad
+v_asig_esc:=ROUND(FN_OBT_PORC_ESCOLARIDAD(reg_emp.cod_escolaridad)*reg_emp.sueldo_base);
+-- Se obtiene porcentaje de comision dependiendo de las ventas del empleado
+-- y se calcula la comision por ventas
+SELECT porc_comision / 100
+into v_pctcomis
+from porcentaje_comision_venta
+where PKG_CALCULO_HABERES.v_monto_ventas BETWEEN venta_inf and venta_sup;
+v_comisventas := ROUND(PKG_CALCULO_HABERES.v_monto_ventas * v_pctcomis);
+-- Se almacena el resultado del proceso
+INSERT INTO detalle_haberes_mensual
+VALUES (SUBSTR(p_fec,5,1),SUBSTR(p_fec,7),reg_emp.run_empleado,reg_emp.nombre_emp,
+reg_emp.sueldo_base,p_colacion,v_mov,
+v_asiespecial,v_asig_esc,v_comisventas);
+END LOOP;
+COMMIT;
+END;
+/
+EXEC SP_CALCULA_HABERES('30/06/2023', 75000, 60000);
