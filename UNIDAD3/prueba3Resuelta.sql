@@ -31,3 +31,15 @@ PROCEDURE P_GRABAR_ERROR(p_rutina_error VARCHAR2, p_mensaje_error VARCHAR2);
 END PKG_CALCULO_HABERES;
 5
 /
+CREATE OR REPLACE PACKAGE BODY PKG_CALCULO_HABERES AS
+v_monto_ventas NUMBER(8) := 0;
+FUNCTION F_OBT_MONTO_VENTAS(p_run VARCHAR2, p_fec VARCHAR2) RETURN NUMBER
+AS
+v_monto_ventas NUMBER(8);
+BEGIN
+SELECT SUM(monto_total_boleta)
+INTO v_monto_ventas
+FROM boleta
+WHERE to_char(fecha, 'mm/yyyy') = p_fec
+AND run_empleado = p_run;
+RETURN v_monto_ventas;
