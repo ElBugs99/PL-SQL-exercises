@@ -20,3 +20,16 @@ CREATE TABLE AUDIT_EMPLEADOS
  new_department_id NUMBER(3),
  old_department_id NUMBER(3),
  fecha_modificacion DATE);
+
+ CREATE OR REPLACE TRIGGER TRG_AUDIT_EMPLEADOS
+/* TIEMPO EN QUE SE VA A ACTIVAR EL TRIGGER Y SOBRE QUE SENTENCIAS
+DML SE ACTIVARA EL TRIGGER */
+AFTER INSERT OR UPDATE OR DELETE ON empleados
+FOR EACH ROW
+BEGIN
+   INSERT INTO AUDIT_EMPLEADOS
+   VALUES(:NEW.employee_id, :OLD.employee_id,:NEW.last_name,
+          :OLD.last_name, :NEW.first_name, :OLD.first_name,
+          :NEW.salary, :OLD.salary, :NEW.email, :OLD.email,
+          :NEW.department_id, :OLD.department_id, SYSDATE);
+END;
