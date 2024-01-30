@@ -113,3 +113,9 @@ CREATE TABLE ERROR_PROCESO
 (sec_error NUMBER(3) NOT NULL,
  rutina_error VARCHAR2(100) NOT NULL,
  mensaje_error VARCHAR2(250) NOT NULL);
+
+ INSERT INTO PRESTAMO_SOCIAL(nro_prestamo,id_empleado,valor_prestamo,fecha_prestamo,fecha_venc_prestamo)
+SELECT SEQ_NRO_PRESTAMO_SOCIAL.NEXTVAL,employee_id, ROUND(salary*(SEQ_PRESTAMO_SOCIAL.NEXTVAL/100)) valor, SYSDATE, SYSDATE+60
+    FROM employees
+    WHERE department_id = 50;   
+COMMIT; 
