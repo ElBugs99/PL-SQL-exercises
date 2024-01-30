@@ -76,3 +76,19 @@ CREATE TABLE PRESTAMO_SOCIAL
  new_job_id       VARCHAR2(10), 
  old_salary       NUMBER(8,2), 
  new_salary       NUMBER(8,2));
+
+ CREATE TABLE PRODUCTO 
+(cod_producto NUMBER (5) CONSTRAINT PK_PRODUCTO PRIMARY KEY, 
+ desc_producto VARCHAR2 (30)  NOT NULL);
+
+CREATE TABLE STOCK 
+(cod_producto NUMBER (5)  CONSTRAINT PK_STOCK PRIMARY KEY, 
+ stock_minimo NUMBER (5)  NOT NULL , 
+ stock_actual NUMBER (5)  NOT NULL,
+ CONSTRAINT FK_STOCK_PRODUCTO FOREIGN KEY(cod_producto) REFERENCES PRODUCTO (cod_producto));
+
+CREATE TABLE BOLETA 
+(nro_boleta NUMBER (10) CONSTRAINT PK_BOLETA PRIMARY KEY, 
+ fecha_boleta DATE  NOT NULL , 
+ monto_boleta NUMBER (10)  NOT NULL , 
+ id_vendedor NUMBER (10)  NOT NULL);
