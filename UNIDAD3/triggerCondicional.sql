@@ -65,3 +65,14 @@ CREATE TABLE PRESTAMO_SOCIAL
  fecha_pago DATE DEFAULT NULL,
  multa NUMBER(5) DEFAULT 0,
  estado_pago VARCHAR2(200) DEFAULT NULL);
+
+ CREATE TABLE audit_emp
+(user_name        VARCHAR2(30), 
+ old_employee_id  NUMBER(5),
+ new_employee_id  NUMBER(5),
+ old_last_name    VARCHAR2(30), 
+ new_last_name    VARCHAR2(30), 
+ old_job_id       VARCHAR2(10), 
+ new_job_id       VARCHAR2(10), 
+ old_salary       NUMBER(8,2), 
+ new_salary       NUMBER(8,2));
