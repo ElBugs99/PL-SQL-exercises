@@ -207,4 +207,10 @@ SYSDATE,
 );
 
     INSERT INTO DETALLE_BOLETA
-    VALUES(
+    VALUES(  
+    105,
+    2000,
+    150,
+    1500,
+    225000
+    );
